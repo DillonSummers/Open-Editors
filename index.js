@@ -1,12 +1,18 @@
 const userListEl = document.querySelector(".user-list");
 
-async function main() {
-  const res = await fetch("https://jsonplaceholder.typicode.com/users");
-  const usersData = await res.json();
-  userListEl.innerHTML = usersData.map(user => userHTML(user)).join("");
+async function fetchUsers() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/users");
+  const users = await response.json();
+  const limitedUsers = [...users, ...Array(10).fill(null)].slice(0, 10);
+  userListEl.innerHTML = limitedUsers.map(user => userHTML(user)).join("");
 }
 
-main();
+document.getElementById("searchId").addEventListener("input", (event) => {
+  const value = event.target.value;
+  if (value >= 1 && value <= 10) {
+    loadPosts(value); // or whatever your fetching function is
+  }
+});
 
 function showUserPosts(id) {
   localStorage.setItem("id", id);
@@ -26,3 +32,4 @@ function userHTML(user) {
   `;
 }
 
+fetchUsers(); // ✅ Call this instead of main()
