@@ -9,7 +9,8 @@ async function fetchUsers() {
 
 function showUserPosts(id) {
   localStorage.setItem("id", id);
-  window.location.href = `${window.location.origin}/user.html`;
+  const basePath = window.location.pathname.replace("index.html", "");
+  window.location.href = basePath + "user.html";
 }
 
 function userHTML(user) {
