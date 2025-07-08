@@ -1,17 +1,10 @@
 const userListEl = document.querySelector(".user-list");
 
-async function fetchUsers() {
-  const response = await fetch("https://jsonplaceholder.typicode.com/users");
-  const users = await response.json();
-  const limitedUsers = users.slice(0, 10); // only first 10 users
-  userListEl.innerHTML = limitedUsers.map(user => userHTML(user)).join("");
-}
-
-function showUserPosts(id) {
+// Make the function globally accessible
+window.showUserPosts = function(id) {
   localStorage.setItem("id", id);
-  const basePath = window.location.pathname.replace("index.html", "");
-  window.location.href = basePath + "user.html";
-}
+  window.location.href = "user.html";
+};
 
 function userHTML(user) {
   return `
@@ -26,4 +19,18 @@ function userHTML(user) {
   `;
 }
 
-fetchUsers(); // ✅ Call this instead of main()
+async function fetchUsers() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/users");
+    if (!response.ok) throw new Error("Network response was not ok");
+    const users = await response.json();
+    const limitedUsers = users.slice(0, 10);
+    userListEl.innerHTML = limitedUsers.map(user => userHTML(user)).join("");
+  } catch (error) {
+    userListEl.innerHTML = "<p>Failed to load users. Please try again later.</p>";
+    console.error("Fetch error:", error);
+  }
+}
+
+// ✅ Call the fetch function
+fetchUsers();
